@@ -1,27 +1,21 @@
 import React from "react";
 import Navbar from "./components/Navbar";
-import Detail from "./components/Detail";
-import FindFlights from "./components/FindFlights";
+import Detail from "./pages/Detail";
+import FindFlights from "./pages/FindFlights";
+import BookSeat from "./pages/BookSeat";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
-  const [page, setPage] = React.useState({
-    detail: true,
-    findFlights: false,
-    bookSeat: false,
-  });
-
-  function selectPage(name) {
-    setPage((prev) => {
-      return { ...prev, [name]: !prev[name] };
-    });
-  }
 
   return (
-    <div>
-      <Navbar selectPage={selectPage} />
-      {page.detail && <Detail />}
-      {page.findFlights && <FindFlights />}
-    </div>
+    <>
+    <Navbar />
+      <Routes>
+        <Route path="/" element={<Detail />} />
+        <Route path="/findflights" element={<FindFlights />} />
+        <Route path="/bookseat" element={<BookSeat />} />
+      </Routes>
+    </>
   );
 }
 

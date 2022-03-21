@@ -3,6 +3,7 @@ import React from "react";
 function FindFlights() {
   return (
     <>
+      <h3 className="text-md-center">Find available flights</h3>
       <div className="col-md-6 offset-md-3" id="container">
         <div className="card card-body bg-light">
           <form method="post">
