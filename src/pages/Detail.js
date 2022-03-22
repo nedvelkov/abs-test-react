@@ -27,7 +27,7 @@ function Detail() {
       <h3 className="text-md-center">Display system details</h3>
       <div className="col-md-6 offset-md-3" id="container">
         <div className="card card-body bg-light">
-          <label className="font-weight-bold selectObj">Airports aviable</label>
+          <label className="font-weight-bold">Airports aviable</label>
           <ul id="airports">{listAirports[0] && listAirports}</ul>
           <label className="font-weight-bold">Airlines aviable</label>
           <div id="airlines">

@@ -48,6 +48,10 @@ function FindFlights() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    if(findFlight.origin===findFlight.destination){
+      setResp({toggle:true,error:"Destionation must be different from origin"});
+      return;
+    }
     const res = await findAvailableFlights(findFlight);
     console.log(typeof res);
     if (typeof res === "string") {
