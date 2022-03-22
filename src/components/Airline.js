@@ -29,10 +29,9 @@ function Airline(props) {
     return <Flight key={i} {...x} />;
   });
 
-  // onClick={() => getFlights(props.name)}
   return (
-    <li className="airlineTitle" onClick={() => getFlights(props.name)}>
-      <span className="selectObj">
+    <li className="airlineTitle">
+      <span className="selectObj"  onClick={() => getFlights(props.name)}>
         Airline {props.name} offers {props.flights} flights
       </span>
       {toggle && <ul>{flightElements}</ul>}
