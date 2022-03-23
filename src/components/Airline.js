@@ -1,16 +1,9 @@
 import React from "react";
 import Flight from "./Flight";
+import { flightObj } from "../utils/objects";
 
 function Airline(props) {
-  const [flights, setFlights] = React.useState([
-    {
-      airlineName: "",
-      date: "",
-      destination: "",
-      id: "",
-      origin: "",
-    },
-  ]);
+  const [flights, setFlights] = React.useState([flightObj]);
   const [toggle, setToggle] = React.useState(false);
 
   async function getFlights(airlineName) {
@@ -31,7 +24,7 @@ function Airline(props) {
 
   return (
     <li className="airlineTitle">
-      <span className="selectObj"  onClick={() => getFlights(props.name)}>
+      <span className="selectObj" onClick={() => getFlights(props.name)}>
         Airline {props.name} offers {props.flights} flights
       </span>
       {toggle && <ul>{flightElements}</ul>}
