@@ -1,6 +1,6 @@
 import React from "react";
 import Flight from "../components/Flight";
-import { fetchData,handleChange } from "../utils/functions";
+import { fetchGetRequest,handleChange } from "../utils/functions";
 import { flightObj } from "../utils/objects";
 
 function FindFlights() {
@@ -24,7 +24,7 @@ function FindFlights() {
     const path = "https://localhost:1618/api/airports";
     const error = "Currently there is no available airports";
     const statusCode = 204;
-    const getData = fetchData(path, error, statusCode);
+    const getData = fetchGetRequest(path, error, statusCode);
     getData.then((resp) => {
       if (typeof resp === "string") {
         return setResponse({ toggle: false, error: resp });
@@ -53,7 +53,7 @@ function FindFlights() {
     const path = `https://localhost:1618/api/aviableflights?origin=${formData.origin}&destination=${formData.destination}`;
     const error = `There is no flight from ${formData.origin} to ${formData.destination}, at this time`;
     const statusCode = 204;
-    const data = await fetchData(path, error, statusCode);
+    const data = await fetchGetRequest(path, error, statusCode);
 
     if (typeof data === "string") {
       setAnswer({ toggle: true, error: data });

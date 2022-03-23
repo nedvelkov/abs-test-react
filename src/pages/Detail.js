@@ -1,6 +1,6 @@
 import React from "react";
 import Airline from "../components/Airline";
-import { fetchData } from "../utils/functions";
+import { fetchGetRequest } from "../utils/functions";
 
 function Detail() {
   const [data, setData] = React.useState({ airlineList: [], airportList: [] });
@@ -11,7 +11,7 @@ function Detail() {
     const path = "https://localhost:1618/api/system";
     const error = "Wellcome to Airline booking system";
     const statusCode = 204;
-    const getData = fetchData(path, error, statusCode);
+    const getData = fetchGetRequest(path, error, statusCode);
     getData.then((resp) => {
       if (typeof resp === "string") {
         return setResponse({ toggle: false, error: resp });

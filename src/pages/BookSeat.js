@@ -1,5 +1,9 @@
 import React from "react";
-import { fetchData, handleChange } from "../utils/functions";
+import {
+  fetchGetRequest,
+  handleChange,
+  fetchRequest,
+} from "../utils/functions";
 
 function BookSeat() {
   const [data, setData] = React.useState({ flights: [], airlines: [] });
@@ -9,9 +13,11 @@ function BookSeat() {
     error: "",
   });
 
+  const [answer, setAnswer] = React.useState({ toggle: false, value: "" });
+
   const [formData, setFormData] = React.useState({
-    flightId: "",
-    airline: "",
+    id: "",
+    airlineName: "",
     seatClass: "",
     row: "",
     column: "",
@@ -24,7 +30,7 @@ function BookSeat() {
 
       const pathFlights = "https://localhost:1618/api/flights";
       const errorFlights = "No flights available";
-      responseData.flights = await fetchData(
+      responseData.flights = await fetchGetRequest(
         pathFlights,
         errorFlights,
         statusCode
@@ -32,7 +38,7 @@ function BookSeat() {
 
       const pathAirlines = "https://localhost:1618/api/airlines";
       const errorAirlines = "No airlines available";
-      responseData.airlines = await fetchData(
+      responseData.airlines = await fetchGetRequest(
         pathAirlines,
         errorAirlines,
         statusCode
@@ -70,7 +76,20 @@ function BookSeat() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log(formData);
+    const rowNumber=Number.parseInt(formData.row);
+    if(rowNumber<1 || rowNumber>100){
+      setAnswer({toggle: true, value: "Row number must be between 1 and 100"})
+      return;
+    }
+    const path = "https://localhost:1618/api/seats";
+    const method = "PUT";
+    const statusCode=422;
+    const sendObject={...formData,
+      seatClass: Number.parseInt(formData.seatClass),
+      row: rowNumber
+    }
+    const resp = fetchRequest(path, sendObject, method,statusCode);
+    resp.then((res) => setAnswer({toggle: true, value: res}));
   }
 
   return (
@@ -86,10 +105,10 @@ function BookSeat() {
                 </p>
                 <select
                   className="form-control"
-                  id="flightId"
-                  value={formData.flightId}
+                  id="id"
+                  value={formData.id}
                   onChange={(event) => handleChange(event, setFormData)}
-                  name="flightId"
+                  name="id"
                 >
                   <option></option>
                   {flights}
@@ -102,10 +121,10 @@ function BookSeat() {
                 </p>
                 <select
                   className="form-control"
-                  id="airline"
-                  value={formData.airline}
+                  id="airlineName"
+                  value={formData.airlineName}
                   onChange={(event) => handleChange(event, setFormData)}
-                  name="airline"
+                  name="airlineName"
                 >
                   <option></option>
                   {airlines}
@@ -166,6 +185,7 @@ function BookSeat() {
               <div className="form-group">
                 <button>Book seat</button>
               </div>
+              <div>{answer.toggle && answer.value}</div>
             </form>
           )}
           {!response.toggle && (
