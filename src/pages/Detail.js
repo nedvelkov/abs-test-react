@@ -1,25 +1,38 @@
 import React from "react";
 import Airline from "../components/Airline";
 import { fetchGetRequest } from "../utils/functions";
+import { useAuth0 } from "@auth0/auth0-react";
+import LoginButton from "../components/LoginButton";
 
 function Detail() {
   const [data, setData] = React.useState({ airlineList: [], airportList: [] });
 
   const [response, setResponse] = React.useState({ toggle: true, error: "" });
 
-  React.useEffect(() => {
-    const path = "https://localhost:1618/api/system";
-    const error = "Wellcome to Airline booking system";
-    const statusCode = 204;
-    const getData = fetchGetRequest(path, error, statusCode);
-    getData.then((resp) => {
-      if (typeof resp === "string") {
-        return setResponse({ toggle: false, error: resp });
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+
+  const seedData = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      if (token === undefined) {
+        return;
       }
-      return setData(resp);
-    });
-    return () => {};
-  }, []);
+      const path = "https://localhost:1618/api/system";
+      const error = "Wellcome to Airline booking system";
+      const statusCode = 204;
+      const resp = await fetchGetRequest(path, error, statusCode, token);
+      if (typeof resp === "string") {
+        setResponse({ toggle: false, error: resp });
+      }
+      setData(resp);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    seedData();
+  }, [isAuthenticated]);
 
   const listAirports = data.airportList.map((x, i) => (
     <li key={i}>Airport {x} is available for all airlines and flights</li>
@@ -33,17 +46,23 @@ function Detail() {
     <>
       <h3 className="text-md-center">Display system details</h3>
       <div className="col-md-6 offset-md-3" id="container">
-        {response.toggle && (
-          <div className="card card-body bg-light">
-            <label className="font-weight-bold">Airports aviable</label>
-            <ul id="airports">{listAirports[0] && listAirports}</ul>
-            <label className="font-weight-bold">Airlines aviable</label>
-            <div id="airlines">
-              <ul>{listAirlines}</ul>
+        {isAuthenticated ? (
+          response.toggle && (
+            <div className="card card-body bg-light">
+              <label className="font-weight-bold selectObj" onClick={seedData}>
+                Airports aviable
+              </label>
+              <ul id="airports">{listAirports[0] && listAirports}</ul>
+              <label className="font-weight-bold">Airlines aviable</label>
+              <div id="airlines">
+                <ul>{listAirlines}</ul>
+              </div>
             </div>
-          </div>
+          )
+        ) : (
+          <LoginButton />
         )}
-        {!response.toggle && (
+        {isAuthenticated && !response.toggle && (
           <div className="card card-body bg-light">{response.error}</div>
         )}
       </div>

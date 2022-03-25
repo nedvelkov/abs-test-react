@@ -11,6 +11,11 @@ function Navbar() {
             <ul className="navbar-nav flex-grow-1">
               <li className="nav-item">
                 <Link to="/" className="nav-link text-dark">
+                  Home
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/details" className="nav-link text-dark">
                   Details
                 </Link>
               </li>
@@ -22,6 +27,11 @@ function Navbar() {
               <li className="nav-item">
                 <Link to="/bookseat" className="nav-link text-dark">
                   Book seat
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/profile" className="nav-link text-dark">
+                  Profile
                 </Link>
               </li>
               <li>
