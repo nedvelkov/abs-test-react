@@ -2,7 +2,6 @@ import React from "react";
 import Airline from "../components/Airline";
 import { fetchGetRequest } from "../utils/functions";
 import { useAuth0 } from "@auth0/auth0-react";
-import LoginButton from "../components/LoginButton";
 
 function Detail() {
   const [data, setData] = React.useState({ airlineList: [], airportList: [] });
@@ -44,11 +43,16 @@ function Detail() {
 
   return (
     <>
-      <h3 className="text-md-center">Display system details</h3>
+      <h3 className="text-md-center">Flight information</h3>
       <div className="col-md-6 offset-md-3" id="container">
-        {isAuthenticated ? (
-          response.toggle && (
-            <div className="card card-body bg-light">
+        <div className="card card-body bg-light">
+          {!isAuthenticated && (
+            <div className="d-flex justify-content-center">
+              Log in your account
+            </div>
+          )}
+          {isAuthenticated && response.toggle && (
+            <>
               <label className="font-weight-bold selectObj" onClick={seedData}>
                 Airports aviable
               </label>
@@ -57,12 +61,11 @@ function Detail() {
               <div id="airlines">
                 <ul>{listAirlines}</ul>
               </div>
-            </div>
-          )
-        ) : (
-          <LoginButton />
-        )}
-        {isAuthenticated && !response.toggle && (
+            </>
+          )}
+        </div>
+
+        {isAuthenticated && response.toggle && (
           <div className="card card-body bg-light">{response.error}</div>
         )}
       </div>

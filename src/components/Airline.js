@@ -1,21 +1,28 @@
 import React from "react";
 import Flight from "./Flight";
 import { flightObj } from "../utils/objects";
+import { fetchGetRequest } from "../utils/functions";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Airline(props) {
   const [flights, setFlights] = React.useState([flightObj]);
   const [toggle, setToggle] = React.useState(false);
+  const { getAccessTokenSilently } = useAuth0();
 
   async function getFlights(airlineName) {
     setToggle((prev) => !prev);
     if (toggle) {
       return;
     }
-    const res = await fetch(
-      `https://localhost:1618/api/flightsbyname?airlineName=${airlineName}`
-    );
-    const resData = await res.json();
-    setFlights(resData);
+    const token = await getAccessTokenSilently();
+    if (token === undefined) {
+      return;
+    }
+    const path = `https://localhost:1618/api/flightsbyname?airlineName=${airlineName}`;
+    const error = `This airline don't have flights, at this time`;
+    const statusCode = 204;
+    const data = await fetchGetRequest(path, error, statusCode, token);
+    setFlights(data);
   }
 
   const flightElements = flights.map((x, i) => {

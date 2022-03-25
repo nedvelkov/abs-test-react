@@ -4,9 +4,11 @@ import {
   handleChange,
   fetchRequest,
 } from "../utils/functions";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function BookSeat() {
   const [data, setData] = React.useState({ flights: [], airlines: [] });
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const [response, setResponse] = React.useState({
     toggle: true,
@@ -24,40 +26,40 @@ function BookSeat() {
   });
 
   React.useEffect(() => {
-    async function getData() {
-      const responseData = { flights: [], airlines: [] };
-      const statusCode = 204;
+    // async function getData() {
+    //   const responseData = { flights: [], airlines: [] };
+    //   const statusCode = 204;
 
-      const pathFlights = "https://localhost:1618/api/flights";
-      const errorFlights = "No flights available";
-      responseData.flights = await fetchGetRequest(
-        pathFlights,
-        errorFlights,
-        statusCode
-      );
+    //   const pathFlights = "https://localhost:1618/api/flights";
+    //   const errorFlights = "No flights available";
+    //   responseData.flights = await fetchGetRequest(
+    //     pathFlights,
+    //     errorFlights,
+    //     statusCode
+    //   );
 
-      const pathAirlines = "https://localhost:1618/api/airlines";
-      const errorAirlines = "No airlines available";
-      responseData.airlines = await fetchGetRequest(
-        pathAirlines,
-        errorAirlines,
-        statusCode
-      );
+    //   const pathAirlines = "https://localhost:1618/api/airlines";
+    //   const errorAirlines = "No airlines available";
+    //   responseData.airlines = await fetchGetRequest(
+    //     pathAirlines,
+    //     errorAirlines,
+    //     statusCode
+    //   );
 
-      if (typeof responseData.airlines === "string") {
-        setResponse({ toggle: false, error: responseData.airlines });
-        return;
-      }
-      if (typeof responseData.flights === "string") {
-        setResponse({ toggle: false, error: responseData.flights });
-        return;
-      }
-      return responseData;
-    }
+    //   if (typeof responseData.airlines === "string") {
+    //     setResponse({ toggle: false, error: responseData.airlines });
+    //     return;
+    //   }
+    //   if (typeof responseData.flights === "string") {
+    //     setResponse({ toggle: false, error: responseData.flights });
+    //     return;
+    //   }
+    //   return responseData;
+    // }
 
-    if (response.toggle) {
-      getData().then((x) => setData(x));
-    }
+    // if (response.toggle) {
+    //   getData().then((x) => setData(x));
+    // }
 
     return () => {};
   }, []);
@@ -76,20 +78,24 @@ function BookSeat() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const rowNumber=Number.parseInt(formData.row);
-    if(rowNumber<1 || rowNumber>100){
-      setAnswer({toggle: true, value: "Row number must be between 1 and 100"})
+    const rowNumber = Number.parseInt(formData.row);
+    if (rowNumber < 1 || rowNumber > 100) {
+      setAnswer({
+        toggle: true,
+        value: "Row number must be between 1 and 100",
+      });
       return;
     }
     const path = "https://localhost:1618/api/seats";
     const method = "PUT";
-    const statusCode=422;
-    const sendObject={...formData,
+    const statusCode = 422;
+    const sendObject = {
+      ...formData,
       seatClass: Number.parseInt(formData.seatClass),
-      row: rowNumber
-    }
-    const resp = fetchRequest(path, sendObject, method,statusCode);
-    resp.then((res) => setAnswer({toggle: true, value: res}));
+      row: rowNumber,
+    };
+    const resp = fetchRequest(path, sendObject, method, statusCode);
+    resp.then((res) => setAnswer({ toggle: true, value: res }));
   }
 
   return (
@@ -97,7 +103,12 @@ function BookSeat() {
       <h3 className="text-md-center">Book seat</h3>
       <div className="col-md-6 offset-md-3">
         <div className="card card-body bg-light">
-          {response.toggle && (
+          {!isAuthenticated && (
+            <div className="d-flex justify-content-center">
+              Log in your account
+            </div>
+          )}
+          {isAuthenticated && response.toggle && (
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <p className="mb-0">
@@ -188,7 +199,7 @@ function BookSeat() {
               <div>{answer.toggle && answer.value}</div>
             </form>
           )}
-          {!response.toggle && (
+          {isAuthenticated && !response.toggle && (
             <div className="card card-body bg-light">{response.error}</div>
           )}
         </div>

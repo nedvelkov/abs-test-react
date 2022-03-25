@@ -13,13 +13,14 @@ export async function fetchGetRequest(path, error, statusCode, accessToken) {
   return resData;
 }
 
-export async function fetchRequest(path, data, method, statusCode) {
+export async function fetchRequest(path, data, method, statusCode,accessToken) {
   const dataAsJson = JSON.stringify(data);
   console.log(dataAsJson);
   const res = await fetch(path, {
     method: method,
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: dataAsJson,
   });

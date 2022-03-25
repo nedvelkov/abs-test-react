@@ -52,10 +52,15 @@ function FindFlights() {
       return;
     }
 
+    const token = await getAccessTokenSilently();
+    if (token === undefined) {
+      return;
+    }
+
     const path = `https://localhost:1618/api/aviableflights?origin=${formData.origin}&destination=${formData.destination}`;
     const error = `There is no flight from ${formData.origin} to ${formData.destination}, at this time`;
     const statusCode = 204;
-    const data = await fetchGetRequest(path, error, statusCode);
+    const data = await fetchGetRequest(path, error, statusCode, token);
 
     if (typeof data === "string") {
       setAnswer({ toggle: true, error: data });
@@ -75,43 +80,47 @@ function FindFlights() {
       <h3 className="text-md-center">Find available flights</h3>
       <div className="col-md-6 offset-md-3" id="container">
         <div className="card card-body bg-light">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <p className="mb-0">
-                <label>Origin</label>
-              </p>
-              <select
-                className="form-control"
-                id="origin"
-                value={formData.origin}
-                onChange={(event) => handleChange(event, setFormData)}
-                name="origin"
-              >
-                <option></option>
-                {airports}
-              </select>
-            </div>
-            <div className="form-group">
-              <p className="mb-0">
-                <label>Destination</label>
-              </p>
-              <select
-                className="form-control"
-                id="destination"
-                value={formData.destination}
-                onChange={(event) => handleChange(event, setFormData)}
-                name="destination"
-              >
-                <option></option>
-                {airports}
-              </select>
-            </div>
+          {!isAuthenticated ? (
+            <div className="d-flex justify-content-center">Log in your account</div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <p className="mb-0">
+                  <label>Origin</label>
+                </p>
+                <select
+                  className="form-control"
+                  id="origin"
+                  value={formData.origin}
+                  onChange={(event) => handleChange(event, setFormData)}
+                  name="origin"
+                >
+                  <option></option>
+                  {airports}
+                </select>
+              </div>
+              <div className="form-group">
+                <p className="mb-0">
+                  <label>Destination</label>
+                </p>
+                <select
+                  className="form-control"
+                  id="destination"
+                  value={formData.destination}
+                  onChange={(event) => handleChange(event, setFormData)}
+                  name="destination"
+                >
+                  <option></option>
+                  {airports}
+                </select>
+              </div>
 
-            <div className="form-group">
-              <button>Find flights</button>
-              <ul>{answer.toggle && flightElements}</ul>
-            </div>
-          </form>
+              <div className="form-group">
+                <button>Find flights</button>
+                <ul>{answer.toggle && flightElements}</ul>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </>

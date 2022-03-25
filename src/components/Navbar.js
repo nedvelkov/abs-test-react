@@ -16,7 +16,7 @@ function Navbar() {
               </li>
               <li className="nav-item">
                 <Link to="/details" className="nav-link text-dark">
-                  Details
+                  Flight information
                 </Link>
               </li>
               <li className="nav-item">
