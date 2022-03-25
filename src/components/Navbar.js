@@ -1,47 +1,29 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import MainNav from "./MainNav";
 import AuthNav from "./AuthNav";
+import AdminNav from "./AdminNav";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Navbar() {
+  const { user } = useAuth0();
+  const navbar = () => {
+    if (user) {
+      const role =
+        user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"][0];
+      return role === "admin" ? <AdminNav /> : <MainNav />;
+    }
+    return <MainNav />;
+  };
   return (
-    <>
-      <nav className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div className="nav-container mb-3">
+      <nav className="navbar navbar-expand-md navbar-light bg-light">
         <div className="container">
-          <div className="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-            <ul className="navbar-nav flex-grow-1">
-              <li className="nav-item">
-                <Link to="/" className="nav-link text-dark">
-                  Home
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/details" className="nav-link text-dark">
-                  Flight information
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/findflights" className="nav-link text-dark">
-                  Find flights
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/bookseat" className="nav-link text-dark">
-                  Book seat
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/profile" className="nav-link text-dark">
-                  Profile
-                </Link>
-              </li>
-              <li>
-                <AuthNav />
-              </li>
-            </ul>
-          </div>
+          <div className="navbar-brand logo" />
+          {navbar()}
+          <AuthNav />
         </div>
       </nav>
-    </>
+    </div>
   );
 }
 

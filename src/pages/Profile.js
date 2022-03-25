@@ -4,21 +4,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth0();
-
-  async function getToken() {
-    const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-    return await useAuth0().getAccessTokenSilently({
-      audience: `https://${domain}/api/v2/`,
-    });
-  }
-
-  let value;
-  getToken().then((x) => {
-    value = x;
-    return console.log(value);
-  });
-  console.log(value);
-
   return (
     <div>
       {isAuthenticated && (
